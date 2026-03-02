@@ -13,7 +13,9 @@ export const devicesSchema = {
   additionalProperties: false,
   required: ['id'],
   properties: {
-    id: { type: 'number' }
+    id: { type: 'number' },
+    name: { type: 'string' },
+    description: { type: 'string' }
   }
 } as const
 export type Devices = FromSchema<typeof devicesSchema>
