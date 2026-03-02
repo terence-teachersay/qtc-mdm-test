@@ -39,22 +39,32 @@ export class DevicesIosEnrollmentDeviceEnrollmentService implements ServiceInter
    *    which can then be downloaded and installed on the user's iOS device to complete the enrollment process.
    * @param id 
    * @param params 
-   * @returns profile as string
+   * @returns profile as xml string
    */
   async get(id: Id, params?: Params): Promise<string> {
+    // Get xml template and replace variables with real values. 
+    // In a real world scenario, the values would be pulled from a database
+    // For testing purposes or no , the values are hardcoded here.
     const profileTemplateFileName = 'enrollment-profile.xml';
     const fileGlobalFolder = 'assets'
-    //TODO: These variable need to pulled from database or config file in a real world scenario. For testing purposes they are hardcoded here.
-    const profile_identifier = 'io.nip.74.2.212.43.qtc-mdm-test.mdm.enroll';
+    
+    // profile_identifier is reverse domain name style unique identifier for the profile, e.g. com.example.mdm.enroll
+    const baseUrl = this.options.app.get('publicBaseUrl') as string;
+    const host = new URL(baseUrl).hostname;
+    const reversedDomain = host.split('.').reverse().join('.');
+    const profile_identifier = `${reversedDomain}.mdm.enroll`;
+
+    // mdm_payload_identifier is reverse domain name style unique identifier for the mdm payload, 
+    // e.g. com.example.mdm.payload. 
+    // It is used in the configuration profile to identify the MDM payload and should be different from the profile identifier
+    const mdm_payload_identifier = `${reversedDomain}.mdm.payload`; // TODO: reverse domain name style identifier, should be generated here with baseUrl
+
+    //TODO: These variable need to pulled from database or config file in a real world scenario. 
+    // For testing purposes they are hardcoded here.
     const profile_display_name = 'QTC Test MDM Enrollment';
     const org_name = 'QTC';
-    const mdm_payload_identifier = 'io.nip.74.2.212.43.qtc-mdm-test.mdm.payload';
     const mdm_payload_display_name = 'QTC Test MDM';
 
-    //TODO: Make base url more dynamic, e.g. by using env variable or config file
-    const baseUrl = 'https://qtc-mdm-test.43.212.2.74.nip.io';
-
-    //const profileTemplateFilePath = join(__dirname, profileTemplateFileName)
     const profileTemplateFilePath = join(process.cwd(),fileGlobalFolder,profileTemplateFileName)
     const template = readFileSync(profileTemplateFilePath, 'utf8');
 

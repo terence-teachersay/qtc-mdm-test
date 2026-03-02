@@ -29,7 +29,9 @@ app.use(urlencoded({ extended: true }))
 // Host the public folder
 app.use('/', serveStatic(app.get('public')))
 
-// Configure services and real-time functionality
+// Feather services set return content type to json by default, 
+// override this for the enrollment service to return the correct content type for the configuration profile.
+// x-apple-aspen-config is used for iOS configuration profiles, which is what we are using for device enrollment.
 app.configure(rest((req, res) => {
   res.format({
     'application/x-apple-aspen-config': () => {

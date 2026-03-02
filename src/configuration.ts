@@ -12,7 +12,16 @@ export const configurationSchema = {
     ...defaultAppSettings,
     host: { type: 'string' },
     port: { type: 'number' },
-    public: { type: 'string' }
+    public: { type: 'string' },
+    publicBaseUrl: { type: 'string' },
+    mdm: {
+      type: 'object',
+      required: ['serverPath', 'checkInPath'],
+      properties: {
+        serverPath: { type: 'string' },
+        checkInPath: { type: 'string' }
+      }
+    }
   }
 } as const
 

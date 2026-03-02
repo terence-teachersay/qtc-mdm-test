@@ -1,8 +1,8 @@
 {
-  "host": "localhost",
+  "host": "127.0.0.1",
   "port": 3030,
   "public": "../public/",
-  "publicBaseUrl": "http://localhost:3030",
+  "publicBaseUrl": "https://qtc-mdm-test.43.212.2.74.nip.io",
   "paginate": { "default": 10, "max": 50 },
   "mdm": {
     "serverPath": "/mdm/server",
