@@ -43,6 +43,7 @@ export class DevicesIosEnrollmentDeviceEnrollmentService implements ServiceInter
    */
   async get(id: Id, params?: Params): Promise<string> {
     const profileTemplateFileName = 'enrollment-profile.xml';
+    const fileGlobalFolder = 'assets'
     //TODO: These variable need to pulled from database or config file in a real world scenario. For testing purposes they are hardcoded here.
     const profile_identifier = 'io.nip.74.2.212.43.qtc-mdm-test.mdm.enroll';
     const profile_display_name = 'QTC Test MDM Enrollment';
@@ -53,7 +54,8 @@ export class DevicesIosEnrollmentDeviceEnrollmentService implements ServiceInter
     //TODO: Make base url more dynamic, e.g. by using env variable or config file
     const baseUrl = 'https://qtc-mdm-test.43.212.2.74.nip.io';
 
-    const profileTemplateFilePath = join(__dirname, profileTemplateFileName)
+    //const profileTemplateFilePath = join(__dirname, profileTemplateFileName)
+    const profileTemplateFilePath = join(process.cwd(),fileGlobalFolder,profileTemplateFileName)
     const template = readFileSync(profileTemplateFilePath, 'utf8');
 
     // ✅ Define variables (universal config)
