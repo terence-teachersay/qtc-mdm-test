@@ -1,0 +1,12 @@
+{  
+  "__comment__": "This is a configuration sample file for the app, to make one your self, copy this file to local.json and change the values as needed. you can use default.json as reference",  
+  "host": "127.0.0.1",
+  "port": 3030,
+  "public": "../public/",
+  "publicBaseUrl": "https://change.this.to.your.local.public.domain || instance public url ",
+  "paginate": { "default": 10, "max": 50 },
+  "mdm": {
+    "serverPath": "/mdm/server",
+    "checkInPath": "/mdm/checkin"
+  }
+}
