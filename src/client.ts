@@ -4,14 +4,23 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
-import { devicesClient } from './services/devices/devices.shared'
-export type { Devices, DevicesData, DevicesQuery, DevicesPatch } from './services/devices/devices.shared'
+import {
+  devicesIosEnrollmentDeviceEnrollmentClient,
+  devicesIosEnrollmentDeviceEnrollmentPath,
+  type DevicesIosEnrollmentDeviceEnrollmentClientService,
+  type DevicesIosEnrollmentDeviceEnrollment
+} from './services/devices/ios/enrollment/device-enrollment/device-enrollment.shared'
 
+export type {
+  DevicesIosEnrollmentDeviceEnrollment
+} from './services/devices/ios/enrollment/device-enrollment/device-enrollment.shared'
 export interface Configuration {
   connection: TransportConnection<ServiceTypes>
 }
 
-export interface ServiceTypes {}
+export interface ServiceTypes {
+  [devicesIosEnrollmentDeviceEnrollmentPath]: DevicesIosEnrollmentDeviceEnrollmentClientService
+}
 
 export type ClientApplication = Application<ServiceTypes, Configuration>
 
@@ -33,6 +42,6 @@ export const createClient = <Configuration = any,>(
   client.configure(authenticationClient(authenticationOptions))
   client.set('connection', connection)
 
-  client.configure(devicesClient)
+  client.configure(devicesIosEnrollmentDeviceEnrollmentClient)
   return client
 }

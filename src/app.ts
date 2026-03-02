@@ -30,7 +30,17 @@ app.use(urlencoded({ extended: true }))
 app.use('/', serveStatic(app.get('public')))
 
 // Configure services and real-time functionality
-app.configure(rest())
+app.configure(rest((req, res) => {
+  res.format({
+    'application/x-apple-aspen-config': () => {
+      res.set('Content-Type', 'application/x-apple-aspen-config');
+      res.send(res.data);
+    },
+    default: () => {
+      res.json(res.data);
+    }
+  });
+}));
 app.configure(
   socketio({
     cors: {
