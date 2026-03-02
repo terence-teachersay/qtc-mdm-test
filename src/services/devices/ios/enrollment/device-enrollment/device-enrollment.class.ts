@@ -67,6 +67,7 @@ export class DevicesIosEnrollmentDeviceEnrollmentService implements ServiceInter
       '__MDM_PAYLOAD_IDENTIFIER__': mdm_payload_identifier,
       '__UUID_MDM__': crypto.randomUUID(),
       '__MDM_PAYLOAD_DISPLAY_NAME__': mdm_payload_display_name,
+      '__UUID_IDENTITY__': crypto.randomUUID(),
       '__SERVER_URL__': `${baseUrl}/devices/ios/mdm/server`,
       '__CHECKIN_URL__': `${baseUrl}/devices/ios/mdm/checkin`
     }

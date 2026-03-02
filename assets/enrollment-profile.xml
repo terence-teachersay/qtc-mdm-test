@@ -20,7 +20,8 @@
       <key>PayloadIdentifier</key><string>__MDM_PAYLOAD_IDENTIFIER__</string>
       <key>PayloadUUID</key><string>__UUID_MDM__</string>
       <key>PayloadDisplayName</key><string>__MDM_PAYLOAD_DISPLAY_NAME__</string>
-
+      <key>IdentityCertificateUUID</key><string>__UUID_IDENTITY__</string>
+      
       <key>ServerURL</key><string>__SERVER_URL__</string>
       <key>CheckInURL</key><string>__CHECKIN_URL__</string>
 
