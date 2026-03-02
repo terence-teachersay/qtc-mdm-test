@@ -7,7 +7,7 @@ export const configurationSchema = {
   $id: 'configuration',
   type: 'object',
   additionalProperties: false,
-  required: ['host', 'port', 'public'],
+  required: ['host', 'port', 'public', 'mdm'],
   properties: {
     ...defaultAppSettings,
     host: { type: 'string' },

@@ -59,6 +59,10 @@ export class DevicesIosEnrollmentDeviceEnrollmentService implements ServiceInter
     // It is used in the configuration profile to identify the MDM payload and should be different from the profile identifier
     const mdm_payload_identifier = `${reversedDomain}.mdm.payload`; // TODO: reverse domain name style identifier, should be generated here with baseUrl
 
+    //Get MDM server Path from config
+    const mdmConfig = this.options.app.get('mdm') as any;
+    const serverPath = mdmConfig?.serverPath || '/mdm/server';
+    const checkInPath = mdmConfig?.checkInPath || '/mdm/checkin';
     //TODO: These variable need to pulled from database or config file in a real world scenario. 
     // For testing purposes they are hardcoded here.
     const profile_display_name = 'QTC Test MDM Enrollment';
@@ -78,8 +82,8 @@ export class DevicesIosEnrollmentDeviceEnrollmentService implements ServiceInter
       '__UUID_MDM__': crypto.randomUUID(),
       '__MDM_PAYLOAD_DISPLAY_NAME__': mdm_payload_display_name,
       '__UUID_IDENTITY__': crypto.randomUUID(),
-      '__SERVER_URL__': `${baseUrl}/devices/ios/mdm/server`,
-      '__CHECKIN_URL__': `${baseUrl}/devices/ios/mdm/checkin`
+      '__SERVER_URL__': `${baseUrl}${serverPath}`,
+      '__CHECKIN_URL__': `${baseUrl}${checkInPath}`
     }
     let profile = template
     for (const [k, v] of Object.entries(vars)) profile = profile.split(k).join(v);
