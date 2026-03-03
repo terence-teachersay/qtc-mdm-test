@@ -2,32 +2,27 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>PayloadType</key><string>Configuration</string>
-  <key>PayloadVersion</key><integer>1</integer>
-
+  <key>PayloadType</key><string>_FILE_PAYLOAD_TYPE_</string>
+  <key>PayloadVersion</key><integer>_FILE_PAYLOAD_VERSION_</integer>
   <key>PayloadIdentifier</key><string>__PROFILE_IDENTIFIER__</string>
   <key>PayloadUUID</key><string>__UUID_MAIN__</string>
   <key>PayloadDisplayName</key><string>__PROFILE_DISPLAY_NAME__</string>
   <key>PayloadOrganization</key><string>__ORG_NAME__</string>
-  <key>PayloadRemovalDisallowed</key><false/>
-
+  <key>PayloadRemovalDisallowed</key><boolean>__PAYLOAD_REMOVAL_DISALLOWED__</boolean>
   <key>PayloadContent</key>
   <array>
     <dict>
-      <key>PayloadType</key><string>com.apple.mdm</string>
-      <key>PayloadVersion</key><integer>1</integer>
-
+      <key>PayloadType</key><string>_CONTENT_PAYLOAD_TYPE_</string>
+      <key>PayloadVersion</key><integer>_CONTENT_PAYLOAD_VERSION_</integer>
       <key>PayloadIdentifier</key><string>__MDM_PAYLOAD_IDENTIFIER__</string>
       <key>PayloadUUID</key><string>__UUID_MDM__</string>
       <key>PayloadDisplayName</key><string>__MDM_PAYLOAD_DISPLAY_NAME__</string>
       <key>IdentityCertificateUUID</key><string>__UUID_IDENTITY__</string>
-      
       <key>ServerURL</key><string>__SERVER_URL__</string>
       <key>CheckInURL</key><string>__CHECKIN_URL__</string>
-
-      <key>AccessRights</key><integer>8191</integer>
-      <key>SignMessage</key><true/>
-      <key>CheckOutWhenRemoved</key><true/>
+      <key>AccessRights</key><integer>__ACCESS_RIGHTS__</integer>
+      <key>SignMessage</key><boolean>__SIGN_MESSAGE__</boolean>
+      <key>CheckOutWhenRemoved</key><boolean>__CHECKOUT_WHEN_REMOVED__</boolean>
     </dict>
   </array>
 </dict>
