@@ -18,11 +18,13 @@ import { logger } from './logger'
 import { logError } from './hooks/log-error'
 import { services } from './services/index'
 import { channels } from './channels'
+import path from 'path'
 
 const app: Application = express(feathers())
 
 // Load app configuration
 app.configure(configuration(configurationValidator))
+app.set('public', path.join(process.cwd(), 'public'))
 app.use(cors())
 app.use(json())
 app.use(urlencoded({ extended: true }))
