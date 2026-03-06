@@ -4,6 +4,22 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { devicesIosServerClient } from './services/devices/ios/server/server.shared'
+export type {
+  DevicesIosServer,
+  DevicesIosServerData,
+  DevicesIosServerQuery,
+  DevicesIosServerPatch
+} from './services/devices/ios/server/server.shared'
+
+import { devicesIosCheckinClient } from './services/devices/ios/checkin/checkin.shared'
+export type {
+  DevicesIosCheckin,
+  DevicesIosCheckinData,
+  DevicesIosCheckinQuery,
+  DevicesIosCheckinPatch
+} from './services/devices/ios/checkin/checkin.shared'
+
 import {
   devicesIosEnrollmentDeviceEnrollmentClient,
   devicesIosEnrollmentDeviceEnrollmentPath,
@@ -11,9 +27,7 @@ import {
   type DevicesIosEnrollmentDeviceEnrollment
 } from './services/devices/ios/enrollment/device-enrollment/device-enrollment.shared'
 
-export type {
-  DevicesIosEnrollmentDeviceEnrollment
-} from './services/devices/ios/enrollment/device-enrollment/device-enrollment.shared'
+export type { DevicesIosEnrollmentDeviceEnrollment } from './services/devices/ios/enrollment/device-enrollment/device-enrollment.shared'
 export interface Configuration {
   connection: TransportConnection<ServiceTypes>
 }
@@ -43,5 +57,7 @@ export const createClient = <Configuration = any,>(
   client.set('connection', connection)
 
   client.configure(devicesIosEnrollmentDeviceEnrollmentClient)
+  client.configure(devicesIosCheckinClient)
+  client.configure(devicesIosServerClient)
   return client
 }

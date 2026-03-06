@@ -1,0 +1,1 @@
+export const deviceMap = new Map<string, any>();

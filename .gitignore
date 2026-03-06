@@ -1,6 +1,9 @@
 # config for local
 config/local.json
 
+# certs for locals
+certs/
+
 # Logs
 logs
 *.log

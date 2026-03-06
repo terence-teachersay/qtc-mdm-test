@@ -37,27 +37,7 @@ export const devicesIosEnrollmentDeviceEnrollment = (app: Application) => {
       remove: []
     },
     after: {
-      all: [],
-      get: [
-        async (context) => {
-         const xml = context.result as string
-
-          // ✅ Send bytes so Feathers/Express won't JSON-wrap it
-          ;(context as any).dispatch = Buffer.from(xml, 'utf8')
-
-          // ✅ Set HTTP response details for REST transport
-          context.http = context.http ?? {}
-          context.http.status = 200
-          context.http.headers = {
-            ...(context.http.headers ?? {}),
-            'Content-Type': 'application/x-apple-aspen-config; charset=utf-8',
-            'Content-Disposition': 'attachment; filename="enroll.mobileconfig"',
-            'Cache-Control': 'no-store'
-          }
-
-          return context
-        }
-      ]
+      all: []
     },
     error: {
       all: []
