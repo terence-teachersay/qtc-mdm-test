@@ -10,6 +10,8 @@ import type {
 } from './device-enrollment.schema'
 import { join } from 'path'
 import { readFileSync } from 'fs'
+import { devicesIosServerPath } from '../../server/server.shared'
+import { devicesIosCheckinPath } from '../../checkin/checkin.shared'
 
 export type {
   DevicesIosEnrollmentDeviceEnrollment,
@@ -180,14 +182,10 @@ export class DevicesIosEnrollmentDeviceEnrollmentService implements ServiceInter
     // APNs topic for MDM, which is used for the device to receive push notification from MDM server.
     const contentTopic = "com.apple.mgmt.External.beb7d701-9419-4839-b984-e421062d33f6" //from db later
     const contentIdentityCertificateUUID = certPayloadUUID
-
-    //get MDM server Path and Check in path from config
-    const mdmConfig = this.options.app.get('mdm') as any;
     
     // Server End point for the device to check for commands 
     // The end point is implmented in devices\ios\server UPDATE method.
-    const serverPath = mdmConfig.serverPath;
-    const contentServerUrl = `${baseUrl}${serverPath}`;
+    const contentServerUrl = `${baseUrl}/${devicesIosServerPath}`;
 
     // Check in End point for the device to do authenticate, update push APNs Token and check out.
     // The end point is implmented in devices\ios\checkin UPDATE method.
@@ -201,8 +199,7 @@ export class DevicesIosEnrollmentDeviceEnrollmentService implements ServiceInter
     // The token should be link to the loggin in user info as well.
     // In checkin end point.  when device check in,  either check if the token is valid (first time check in) 
     // or check if the device UDUD is already in the database and is valid UDID
-    const checkInPath = mdmConfig.checkInPath;
-    const contentCheckInUrl = `${baseUrl}${checkInPath}`;
+    const contentCheckInUrl = `${baseUrl}/${devicesIosCheckinPath}`;
 
     // Access right for the MDM server to manage the device. 8191 is full access.
     const contentAccessRights = 8191; //from db later

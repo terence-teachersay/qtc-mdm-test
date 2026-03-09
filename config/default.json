@@ -3,9 +3,5 @@
   "port": 3030,
   "public": "../public/",
   "publicBaseUrl": "http://localhost:3030",
-  "paginate": { "default": 10, "max": 50 },
-  "mdm": {
-    "serverPath": "/devices/ios/server",
-    "checkInPath": "/devices/ios/checkin"
-  }
+  "paginate": { "default": 10, "max": 50 }
 }

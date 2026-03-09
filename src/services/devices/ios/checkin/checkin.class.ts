@@ -3,7 +3,8 @@ import type { Id, NullableId, Params, ServiceInterface } from '@feathersjs/feath
 import type { Application } from '../../../../declarations'
 import type { DevicesIosCheckin, DevicesIosCheckinData, DevicesIosCheckinPatch, DevicesIosCheckinQuery} from './checkin.schema'
 import plist from 'plist'
-import { deviceMap } from '../../../../device-store'
+import { deviceMap } from '../ios-device-store'
+import { logger } from '../../../../logger'
 
 export type { DevicesIosCheckin, DevicesIosCheckinData, DevicesIosCheckinPatch, DevicesIosCheckinQuery }
 
@@ -53,12 +54,12 @@ export class DevicesIosCheckinService<
       const msg: any = plist.parse(data);
 
       const { MessageType, UDID } = msg;
-
-      console.log(`[MDM Checkin] Correctly Parsed: ${MessageType} from ${UDID}`);
+      logger.info(`MDM Checkin`, msg);  
 
       //Handle different incoming message
       switch (MessageType) {
         //TODO need to really authenticate the device. Now we just upsert the device info into the Map without any authentication.
+        //Need to check if the device is already register under other organization.
         case 'Authenticate':
           this.upsertDevice(UDID, msg);
           break;
@@ -66,11 +67,12 @@ export class DevicesIosCheckinService<
           this.upsertDevice(UDID, msg);
           break;
         case 'CheckOut':
-          //TODO need to handle check out as well.
+          deviceMap.delete(UDID);
+          logger.info(`Device checked out`, { UDID });
           break;
         default:
-          //TODO need to handle unknon message type.
-          //Throw a system 500 error.
+          logger.error("Unknown Check in Message Type", MessageType)
+          //TODO: Need to link this to Google chat or alert channel
           break;  
       }
 
@@ -89,8 +91,6 @@ export class DevicesIosCheckinService<
       ...info,
       lastSeen: new Date()
     });
-
-    console.log(`[Storage] Active devices in Map: ${deviceMap.size}`);
   }
 
   async patch(

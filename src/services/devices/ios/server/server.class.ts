@@ -9,11 +9,14 @@ import type {
   DevicesIosServerQuery
 } from './server.schema'
 import * as plist from 'plist';
-import { v4 as uuidv4 } from 'uuid';
-import { deviceMap } from '../../../../device-store'
+import { deviceMap } from '../ios-device-store'
 import apn from 'apn';
 import fs from 'fs';
 import path from 'path';
+import { logger } from '../../../../logger';
+
+// shared command queue helpers (not specific to service)
+import { addCommand, CommandStatus, getNextCommand, updateCommandStatus } from '../command-queue';
 
 export type { DevicesIosServer, DevicesIosServerData, DevicesIosServerPatch, DevicesIosServerQuery }
 
@@ -35,6 +38,7 @@ export class DevicesIosServerService<
    */
   async find(params?: Params) {
     // Convert the Map values into a simple array to view
+    logger.info("src\services\devices\ios\server FIND called")
     return Array.from(deviceMap.values());
   }
 
@@ -46,24 +50,58 @@ export class DevicesIosServerService<
 
   /**
    * Trigger a "Push" to a specific device to force it to check for commands
+   * device udid is passing in
    * TODO Tempoary only  remove later
    */
   async create(data: any, params?: Params): Promise<any> {
-    const device = deviceMap.get(data.udid);
-    if (!device || !device.Token) {
-        throw new Error('Device not found or has no Push Token');
+    // Expect callers to provide at least udid and payload.  This method
+    // both enqueues the command and (optionally) sends a push notification.
+    logger.info("src\services\devices\ios\server CREATE called")
+    const { udid } = data;
+    if (!udid) {
+      throw new Error('Must supply udid and payload');
+    }
+    const device = deviceMap.get(udid);
+    if(!device){
+      throw new Error('Device UDID not found');
     }
 
-    // --- APNS LOGIC START ---
-    // Send a push to APNs to wake up device udid and check for commands
-    console.log(`[APNs] Sending Push to ${data.udid} with Magic: ${device.PushMagic}`);
-    await this.sendApnsPush(device.Token, device.PushMagic);
+    // Device information queries to request
+    const deviceInfoPayload = {
+      RequestType: 'DeviceInformation',
+      Queries: [
+        'Model',
+        'ProductName',
+        'SerialNumber',
+        'DeviceName',
+        'OSVersion',
+        'AvailableDeviceCapacity',
+        'BatteryLevel',
+        'StorageCapacity'
+      ]
+    };
 
-    return { status: 'Push Sent' };
+    // Queue 2 DeviceInformation commands
+    const queuedCommands = Array.from({ length: 2 }, () =>
+      addCommand(
+        udid,
+        'DeviceInformation',
+        deviceInfoPayload,
+        1  // priority
+      )
+    );
+
+    // Send push notification to wake device if it has push token
+    if (device && device.Token) {
+      logger.info(`[APNs] Sending Push to ${udid}`);
+      await this.sendApnsPush(device.Token, device.PushMagic);
+    }
+
+    return queuedCommands[queuedCommands.length - 1];
   }
 
   /**
-   * Sent
+   * Sent push notification to device
    * @param deviceToken 
    * @param pushMagic 
    */
@@ -94,12 +132,12 @@ export class DevicesIosServerService<
       const result = await apnProvider.send(notification, deviceTokenHex);
       
       if (result.failed && result.failed.length > 0) {
-        console.error('[APNS] Failed:', result.failed[0].response);
+        logger.error('[APNS] Failed:', result.failed[0].response);
       } else {
-        console.log('[APNS] Push sent successfully to device');
+        logger.info('[APNS] Push sent successfully to device');
       }
     } catch (err) {
-      console.error('[APNS] Error connecting to Apple:', err);
+      logger.error('[APNS] Error connecting to Apple:', err);
     }
   }
 
@@ -111,42 +149,58 @@ export class DevicesIosServerService<
    */
   async update(id: NullableId, data: any, params?: Params): Promise<any> {
     const msg: any = plist.parse(data);
+    logger.info(`[MDM] command loop fetch`, msg );  
     const { Status, UDID, CommandUUID, QueryResponses } = msg;
+    let returnResponse = {}
 
-    console.log(`[MDM Loop] Status: ${Status} | Device: ${UDID}`);
-
-    // 1. Device asks for work
-    if (Status === 'Idle') {
-      const command = {
-        Command: {
-          RequestType: 'DeviceInformation',
-          Queries: ['Model', 'ProductName', 'SerialNumber', 'DeviceName', 'OSVersion', 'AvailableDeviceCapacity','BatteryLevel','StorageCapacity' ]
-        },
-        CommandUUID: uuidv4()
-      };
-
-      // wrap command in xml
-      return { xml: plist.build(command) };
+    // Handle NotNow - keep command in queue for later retry
+    if (Status === 'NotNow' && CommandUUID) {
+      logger.info(`[MDM] Device ${UDID} returned NotNow for command ${CommandUUID}`);
+      updateCommandStatus(UDID, CommandUUID, CommandStatus.NOT_NOW);
     }
 
-    // 2. Device returns the info we asked for
-    if (Status === 'Acknowledged' && QueryResponses) {
-      const existing = deviceMap.get(UDID) || {};
-      
-      // Update the Map with the new hardware details
-      deviceMap.set(UDID, {
-        ...existing,
-        ...QueryResponses, // This merges Model, SerialNumber, etc.
-        lastSeen: new Date()
-      });
-
-      console.log(`[Storage] Updated info for ${UDID}`);
+    // Handle Acknowledged - mark as done and get next command
+    if (Status === 'Acknowledged') {
+      logger.info(`[MDM] Device ${UDID} acknowledged command ${CommandUUID}`);
+      if (CommandUUID) {
+        updateCommandStatus(UDID, CommandUUID, CommandStatus.ACKNOWLEDGED);
+      }
+      if (QueryResponses) {
+        const existing = deviceMap.get(UDID) || {};
+        // Update the Map with the new hardware details
+        deviceMap.set(UDID, {
+          ...existing,
+          ...QueryResponses,
+          lastSeen: new Date()
+        });
+        logger.info(`[Storage] Updated info for ${UDID}`);
+      }
     }
 
-    //TODO: Need to handle 3 more Status: Error, CommandFormatError, NotNow,  
-    // And a default Status to handle all other status.
+    // Handle Error and CommandFormatError - mark as error and get next command
+    if (Status === 'Error' || Status === 'CommandFormatError') {
+      logger.error(`[MDM] Command ${CommandUUID} failed with status ${Status}`);
+      if (CommandUUID) {
+        updateCommandStatus(UDID, CommandUUID, CommandStatus.ERROR);
+      }
+    }
 
-    return {}; // Send 200 OK to finish the loop
+    // Try to send the next queued command (for all statuses except NotNow)
+    // Status Idle is handle here 
+    if(Status !== "NotNow"){
+      const next = getNextCommand(UDID);
+      if (next) {
+        next.status = CommandStatus.SENT;
+        const response = {
+          Command: next.payload,
+          CommandUUID: next.commandUUID
+        };
+        logger.info(`[MDM] Sending command ${next.commandUUID} to ${UDID}`);
+        returnResponse = { xml: plist.build(response) };
+      }
+    }
+    // No command in queue, device stays idle
+    return returnResponse; // Send 200 OK to finish the loop
   }
 
   async patch(

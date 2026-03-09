@@ -2,11 +2,8 @@
   "__comment__": "This is a configuration sample file for the app, to make one your self, copy this file to local.json and change the values as needed. you can use default.json as reference",  
   "host": "127.0.0.1",
   "port": 3030,
+  "environment": "dev",
   "public": "../public/",
   "publicBaseUrl": "https://change.this.to.your.local.public.domain",
-  "paginate": { "default": 10, "max": 50 },
-  "mdm": {
-    "serverPath": "/devices/ios/mdm/server",
-    "checkInPath": "/devices/ios/mdm/checkin"
-  }
+  "paginate": { "default": 10, "max": 50 }
 }

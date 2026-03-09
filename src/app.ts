@@ -75,6 +75,7 @@ app.configure(channels)
 
 // Configure a middleware for 404s and the error handler
 app.use(notFound())
+logger.level = app.get('environment') === 'dev' ? 'debug' : 'info'; //set logger level base on envirnment setting in config
 app.use(errorHandler({ logger }))
 
 // Register hooks that run on all service methods
