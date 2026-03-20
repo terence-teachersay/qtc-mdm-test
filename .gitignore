@@ -2,7 +2,10 @@
 config/local.json
 
 # certs for locals
-certs/
+certs/*
+
+# user-info for locals
+user-info/*
 
 # Logs
 logs
@@ -125,3 +128,10 @@ dist
 .sqlite
 
 lib/
+
+# Temporary folders
+temp/
+tmp/
+
+# Documentation folder
+docs/

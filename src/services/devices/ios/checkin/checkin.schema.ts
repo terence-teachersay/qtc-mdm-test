@@ -65,7 +65,9 @@ export const devicesIosCheckinQuerySchema = {
   type: 'object',
   additionalProperties: false,
   properties: {
-    ...querySyntax(devicesIosCheckinSchema.properties)
+    ...querySyntax(devicesIosCheckinSchema.properties),
+    itAdminEmail: { type: 'string' },
+    enrollmentToken: { type: 'string' }
   }
 } as const
 export type DevicesIosCheckinQuery = FromSchema<typeof devicesIosCheckinQuerySchema>

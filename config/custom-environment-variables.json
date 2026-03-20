@@ -4,6 +4,7 @@
     "__format": "number"
   },
   "host": "HOSTNAME",
+  "activeDatabase": "ACTIVE_DATABASE",
   "authentication": {
     "secret": "FEATHERS_SECRET"
   }

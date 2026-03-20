@@ -1,0 +1,17 @@
+{
+  "databases": {
+    "qc1-personal": {
+      "client": "pg",
+      "connection": {
+        "host": "localhost",
+        "port": 5432,
+        "user": "postgres",
+        "password": "password123",
+        "database": "mdm",
+        "ssl": {
+          "rejectUnauthorized": false
+        }
+      }
+    }
+  }
+}

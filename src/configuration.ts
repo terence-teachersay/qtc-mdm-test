@@ -15,7 +15,24 @@ export const configurationSchema = {
     port: { type: 'number' },
     environment: { type: 'string' },
     public: { type: 'string' },
-    publicBaseUrl: { type: 'string' }
+    publicBaseUrl: { type: 'string' },
+    authentication: {
+      type: 'object',
+      additionalProperties: true
+    },
+    activeDatabase: { type: 'string' },
+    databases: {
+      type: 'object',
+      additionalProperties: true
+    },
+    postgres: {
+      type: 'object',
+      additionalProperties: true
+    },
+    aws: {
+      type: 'object',
+      additionalProperties: true
+    }
   }
 } as const
 

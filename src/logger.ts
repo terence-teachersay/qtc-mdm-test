@@ -9,17 +9,17 @@ export const logger =  createLogger({
   format: format.combine(
     format.timestamp(),
     format.splat(),
-    format.printf(({ timestamp, level, message, stack, ...meta }) => {
-      const metaString = Object.keys(meta).length ? JSON.stringify(meta) : '';
-      return `${timestamp} [${level}] ${stack || message} ${metaString}`;
-    })
+    format.errors({ stack: true }),
+    format.json()
+    // format.printf(({ timestamp, level, message, stack, ...meta }) => {
+    //   const metaString = Object.keys(meta).length ? JSON.stringify(meta) : '';
+    //   return `${timestamp} [${level}] ${stack || message} ${metaString}`;
+    // })
   ),
   transports: [
     new transports.Console(),
-    //TODO Logging into file might be slow in future.
-    //Ok for now.  we might want to store in something faster.  in AWS?
-    new transports.File({ filename: 'logs/info.log', level: 'info' }),
-    new transports.File({ filename: 'logs/warn.log', level: 'warn' }),
+    // Only log error into file.
+    // The info and warning will be logged in console, and aws cloudwatch agent will pick them up and send to cloudwatch.
     new transports.File({ filename: 'logs/error.log', level: 'error' })
   ]
 })

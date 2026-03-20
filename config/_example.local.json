@@ -1,9 +1,29 @@
-{  
-  "__comment__": "This is a configuration sample file for the app, to make one your self, copy this file to local.json and change the values as needed. you can use default.json as reference",  
+{
+  "__comment__": "Copy this file to local.json and fill in your own values. Refer to default.json for keys you do not need to override.",
   "host": "127.0.0.1",
-  "port": 3030,
   "environment": "dev",
-  "public": "../public/",
   "publicBaseUrl": "https://change.this.to.your.local.public.domain",
-  "paginate": { "default": 10, "max": 50 }
+  "activeDatabase": "<database-config-key-from-databases.json>",
+  "aws": {
+    "region": "<aws-region e.g. ap-east-1>",
+    "accessKeyId": "<optional-shared-access-key-id fallback for all AWS clients>",
+    "secretAccessKey": "<optional-shared-secret-access-key fallback for all AWS clients>",
+    "secretsManager": {
+      "apnsVendorSecretName": "<secrets-manager-secret-name for APNS vendor signing certs or shared PEM secret>",
+      "profileSigningSecretName": "<optional dedicated secret for profileSigningCertPem/profileSigningKeyPem/profileSigningChainOnlyPem>",
+      "scepCaSecretName": "<optional dedicated secret for SCEPCACertPem/SCEPCAKeyPem>",
+      "credentials": {
+        "accessKeyId": "<secrets-manager-only-access-key-id>",
+        "secretAccessKey": "<secrets-manager-only-secret-access-key>"
+      }
+    },
+    "s3": {
+      "bucket": "<s3-bucket-name e.g. qtc-mdm-qc1>",
+      "prefix": "<optional-s3-prefix; leave empty or remove for root-level keys>",
+      "credentials": {
+        "accessKeyId": "<s3-only-access-key-id>",
+        "secretAccessKey": "<s3-only-secret-access-key>"
+      }
+    }
+  }
 }
