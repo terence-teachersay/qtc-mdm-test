@@ -1,5 +1,16 @@
-// For more information about this file see https://dove.feathersjs.com/guides/cli/service.html
-import { create } from 'domain'
+import { hooks as schemaHooks } from '@feathersjs/schema'
+
+import {
+  devicesIosEnrollmentDeviceEnrollmentDataValidator,
+  devicesIosEnrollmentDeviceEnrollmentPatchValidator,
+  devicesIosEnrollmentDeviceEnrollmentQueryValidator,
+  devicesIosEnrollmentDeviceEnrollmentResolver,
+  devicesIosEnrollmentDeviceEnrollmentExternalResolver,
+  devicesIosEnrollmentDeviceEnrollmentDataResolver,
+  devicesIosEnrollmentDeviceEnrollmentPatchResolver,
+  devicesIosEnrollmentDeviceEnrollmentQueryResolver
+} from './device-enrollment.schema'
+
 import type { Application } from '../../../../../declarations'
 import { DevicesIosEnrollmentDeviceEnrollmentService, getOptions } from './device-enrollment.class'
 import {
@@ -10,54 +21,42 @@ import {
 export * from './device-enrollment.class'
 export * from './device-enrollment.schema'
 
-// A configure function that registers the service and its hooks via `app.configure`
 export const devicesIosEnrollmentDeviceEnrollment = (app: Application) => {
-  // Register our service on the Feathers application
   app.use(
     devicesIosEnrollmentDeviceEnrollmentPath,
     new DevicesIosEnrollmentDeviceEnrollmentService(getOptions(app)),
     {
-      // A list of all methods this service exposes externally
       methods: devicesIosEnrollmentDeviceEnrollmentMethods,
-      // You can add additional custom events to be sent to clients here
       events: []
     }
   )
-  // Initialize hooks
+
   app.service(devicesIosEnrollmentDeviceEnrollmentPath).hooks({
     around: {
-      all: []
+      all: [
+        schemaHooks.resolveExternal(devicesIosEnrollmentDeviceEnrollmentExternalResolver),
+        schemaHooks.resolveResult(devicesIosEnrollmentDeviceEnrollmentResolver)
+      ]
     },
     before: {
-      all: [],
+      all: [
+        schemaHooks.validateQuery(devicesIosEnrollmentDeviceEnrollmentQueryValidator),
+        schemaHooks.resolveQuery(devicesIosEnrollmentDeviceEnrollmentQueryResolver)
+      ],
       find: [],
       get: [],
-      create: [],
-      patch: [],
+      create: [
+        schemaHooks.validateData(devicesIosEnrollmentDeviceEnrollmentDataValidator),
+        schemaHooks.resolveData(devicesIosEnrollmentDeviceEnrollmentDataResolver)
+      ],
+      patch: [
+        schemaHooks.validateData(devicesIosEnrollmentDeviceEnrollmentPatchValidator),
+        schemaHooks.resolveData(devicesIosEnrollmentDeviceEnrollmentPatchResolver)
+      ],
       remove: []
     },
     after: {
-      all: [],
-      get: [
-        async (context) => {
-         const xml = context.result as string
-
-          // ✅ Send bytes so Feathers/Express won't JSON-wrap it
-          ;(context as any).dispatch = Buffer.from(xml, 'utf8')
-
-          // ✅ Set HTTP response details for REST transport
-          context.http = context.http ?? {}
-          context.http.status = 200
-          context.http.headers = {
-            ...(context.http.headers ?? {}),
-            'Content-Type': 'application/x-apple-aspen-config; charset=utf-8',
-            'Content-Disposition': 'attachment; filename="enroll.mobileconfig"',
-            'Cache-Control': 'no-store'
-          }
-
-          return context
-        }
-      ]
+      all: []
     },
     error: {
       all: []
@@ -65,7 +64,6 @@ export const devicesIosEnrollmentDeviceEnrollment = (app: Application) => {
   })
 }
 
-// Add this service to the service type index
 declare module '../../../../../declarations' {
   interface ServiceTypes {
     [devicesIosEnrollmentDeviceEnrollmentPath]: DevicesIosEnrollmentDeviceEnrollmentService

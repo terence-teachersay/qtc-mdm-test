@@ -2,25 +2,36 @@ import { defaultAppSettings, getValidator } from '@feathersjs/schema'
 import type { FromSchema } from '@feathersjs/schema'
 
 import { dataValidator } from './validators'
+import { Logger } from 'winston'
 
 export const configurationSchema = {
   $id: 'configuration',
   type: 'object',
   additionalProperties: false,
-  required: ['host', 'port', 'public', 'mdm'],
+  required: ['host', 'port', 'public', 'environment'],
   properties: {
     ...defaultAppSettings,
     host: { type: 'string' },
     port: { type: 'number' },
+    environment: { type: 'string' },
     public: { type: 'string' },
     publicBaseUrl: { type: 'string' },
-    mdm: {
+    authentication: {
       type: 'object',
-      required: ['serverPath', 'checkInPath'],
-      properties: {
-        serverPath: { type: 'string' },
-        checkInPath: { type: 'string' }
-      }
+      additionalProperties: true
+    },
+    activeDatabase: { type: 'string' },
+    databases: {
+      type: 'object',
+      additionalProperties: true
+    },
+    postgres: {
+      type: 'object',
+      additionalProperties: true
+    },
+    aws: {
+      type: 'object',
+      additionalProperties: true
     }
   }
 } as const

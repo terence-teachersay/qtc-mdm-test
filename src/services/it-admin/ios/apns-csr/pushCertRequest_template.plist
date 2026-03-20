@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>PushCertRequestCSR</key><string>__csrB64__</string>
+  <key>PushCertCertificateChain</key><string>__certChainPem__</string>
+  <key>PushCertSignature</key><string>__signatureB64__</string>
+</dict>
+</plist>

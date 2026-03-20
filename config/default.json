@@ -4,8 +4,22 @@
   "public": "../public/",
   "publicBaseUrl": "http://localhost:3030",
   "paginate": { "default": 10, "max": 50 },
-  "mdm": {
-    "serverPath": "/devices/ios/mdm/server",
-    "checkInPath": "/devices/ios/mdm/checkin"
+  "authentication": {
+    "entity": "user",
+    "entityId": "id",
+    "service": "users",
+    "secret": "8f3d2c7b5a1e4f9c0d6a2b7e1c4f8a9d3b6c0e5f2a7d1c9e4b8f6a2d0c7e1b9",
+    "authStrategies": ["jwt", "local"],
+    "jwtOptions": {
+      "header": {
+        "typ": "access"
+      },
+      "algorithm": "HS256",
+      "expiresIn": "2h"
+    },
+    "local": {
+      "usernameField": "email",
+      "passwordField": "password"
+    }
   }
 }

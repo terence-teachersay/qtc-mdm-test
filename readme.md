@@ -40,3 +40,30 @@ $ npx feathers generate service               # Generate a new Service
 ## Help
 
 For more information on all the things you can do with Feathers visit [docs.feathersjs.com](http://docs.feathersjs.com).
+
+## Login authentication (simple)
+
+This project now supports login via Feathers authentication using email/password and JWT.
+
+- Login endpoint: `POST /authentication`
+- Request body:
+
+```json
+{
+    "strategy": "local",
+    "email": "admin@example.com",
+    "password": "ChangeMe123!"
+}
+```
+
+- Response includes `accessToken`
+- Use token for protected admin APIs:
+
+```
+Authorization: Bearer <accessToken>
+```
+
+### Required database table
+
+Run [docs/login-table.sql](docs/login-table.sql) in your Postgres database.
+It creates the `users` table and inserts one sample admin user.

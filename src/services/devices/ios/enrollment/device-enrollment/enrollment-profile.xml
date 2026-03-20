@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>PayloadType</key><string>__PROFILE_PAYLOAD_TYPE__</string>
+  <key>PayloadVersion</key><integer>__PROFILE_PAYLOAD_VERSION__</integer>
+  <key>PayloadIdentifier</key><string>__PROFILE_PAYLOAD_IDENTIFIER__</string>
+  <key>PayloadUUID</key><string>__PROFILE_PAYLOAD_UUID__</string>
+  <key>PayloadDisplayName</key><string>__PROFILE_PAYLOAD_DISPLAY_NAME__</string>
+  <key>PayloadDescription</key><string>__PROFILE_PAYLOAD_DESCRIPTION__</string>
+  <key>PayloadOrganization</key><string>__PROFILE_PAYLOAD_ORGANIZATION__</string>
+  <key>PayloadRemovalDisallowed</key>__PROFILE_REMOVAL_DISALLOWED__
+  <key>PayloadContent</key>
+  <array>
+    <dict>
+      <key>PayloadContent</key>
+      <dict>
+        <key>URL</key><string>__SCEP_URL__</string> 
+        <key>Name</key><string>__SCEP_NAME__</string>
+        <key>Subject</key>
+          <array> 
+            <array> 
+              <array>
+                  <string>O</string><string>__SCEP_O__</string>
+              </array>
+            </array>
+            <array>
+              <array>
+                  <string>CN</string><string>__SCEP_CN__</string>
+              </array>
+            </array>
+        </array>
+        <key>Challenge</key><string>__SCEP_CHALLENGE__</string>
+        <key>Keysize</key><integer>__SCEP_KEY_SIZE__</integer>
+        <key>KeyType</key><string>__SCEP_KEY_TYPE__</string>
+        <key>KeyUsage</key><integer>__SCEP_KEY_USAGE__</integer>
+      </dict>
+      <key>PayloadDescription</key><string>__SCEP_PAYLOAD_DESCRIPTION__</string>
+      <key>PayloadUUID</key><string>__SCEP_PAYLOAD_UUID__</string> 
+      <key>PayloadType</key><string>__SCEP_PAYLOAD_TYPE__</string> 
+      <key>PayloadDisplayName</key><string>__SCEP_PAYLOAD_DISPLAY_NAME__</string> 
+      <key>PayloadVersion</key><integer>__SCEP_PAYLOAD_VERSION__</integer> 
+      <key>PayloadOrganization</key><string>__SCEP_PAYLOAD_ORGANIZATION__</string>
+      <key>PayloadIdentifier</key><string>__SCEP_PAYLOAD_IDENTIFIER__</string> 
+    </dict>
+    <dict>
+      <key>PayloadType</key><string>__CONTENT_PAYLOAD_TYPE__</string>
+      <key>PayloadVersion</key><integer>__CONTENT_PAYLOAD_VERSION__</integer>
+      <key>PayloadIdentifier</key><string>__CONTENT_PAYLOAD_IDENTIFIER__</string>
+      <key>PayloadUUID</key><string>__CONTENT_PAYLOAD_UUID__</string>
+      <key>PayloadDisplayName</key><string>__CONTENT_PAYLOAD_DISPLAY_NAME__</string>
+      <key>Topic</key><string>__CONTENT_TOPIC__</string>
+      <key>IdentityCertificateUUID</key><string>__CONTENT_IDENTITY_CERTIFICATE_UUID__</string>
+      <key>ServerURL</key><string>__CONTENT_SERVER_URL__</string>
+      <key>CheckInURL</key><string>__CONTENT_CHECKIN_URL__</string>
+      <key>AccessRights</key><integer>__CONTENT_ACCESS_RIGHTS__</integer>
+      <key>SignMessage</key>__CONTENT_SIGN_MESSAGE__
+      <key>CheckOutWhenRemoved</key>__CONTENT_CHECKOUT_WHEN_REMOVED__
+    </dict>
+  </array>
+</dict>
+</plist>
